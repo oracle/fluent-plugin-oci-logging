@@ -1,0 +1,11 @@
+# fluent-plugin-oci-logging version 1.0.
+#
+# Copyright (c) 2021, Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl/
+#
+[DEFAULT]
+user=ocid1.user.oc1..default
+fingerprint=bb:bb:bb
+key_file=/path/to/test_key
+tenancy=ocid1.tenancy.oc1..default
+region=ap-chuncheon-1
