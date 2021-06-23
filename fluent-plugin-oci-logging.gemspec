@@ -23,6 +23,7 @@ Gem::Specification.new do |spec|
   spec.executables   = files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
   spec.extra_rdoc_files = ['README.md']
+  spec.metadata      = { "source_code_uri" => "https://github.com/oracle/fluent-plugin-oci-logging" }
 
   spec.summary       = 'OCI Fluentd Logging output plugin following Unified Schema'
   spec.description   = 'Oracle Observability FluentD Plugins : Logging output plugin for OCI logging'

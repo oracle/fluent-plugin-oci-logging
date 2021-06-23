@@ -1,25 +1,26 @@
 # Contributing to the Oracle Cloud Infrastructure Ruby SDK
 
-*Copyright (c) 2016, 2020, Oracle and/or its affiliates.  All rights reserved.*
+Copyright (c) 2021, Oracle and/or its affiliates.
 
-*This software is dual-licensed to you under the Universal Permissive License (UPL) 1.0 as shown at https://oss.oracle.com/licenses/upl
-or Apache License 2.0 as shown at http://www.apache.org/licenses/LICENSE-2.0. You may choose either license.*
+*This software is dual-licensed to you under the Universal Permissive License
+(UPL) 1.0 as shown at <https://oss.oracle.com/licenses/upl> or Apache License 2.0
+as shown at <http://www.apache.org/licenses/LICENSE-2.0>. You may choose either license.*
 
 Pull requests can be made under
-[The Oracle Contributor Agreement](https://www.oracle.com/technetwork/community/oca-486395.html)
+[The Oracle Contributor Agreement](https://oca.opensource.oracle.com)
 (OCA).
 
 For pull requests to be accepted, the bottom of
 your commit message must have the following line using your name and
 e-mail address as it appears in the OCA Signatories list.
 
-```
+```plain
 Signed-off-by: Your Name <you@example.org>
 ```
 
 This can be automatically added to pull requests by committing with:
 
-```
+```plain
 git commit --signoff
 ````
 

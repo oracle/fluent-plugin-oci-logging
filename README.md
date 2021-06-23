@@ -1,11 +1,12 @@
-# OCI Logging Fluentd Plugin
-fluent-plugin-oci-logging is the official [fluentd](https://docs.fluentd.org/)
-output plugin for [OCI](https://www.oracle.com/cloud/) logging.
-This project is open source, in active development and maintained by Oracle
-Corp. The home page of the project is [here](https://docs.cloud.oracle.com/en-us/iaas/Content/Logging/Concepts/loggingoverview.htm).
+# Oracle Cloud Infrastructure Fluentd Plugin
+
+This is the official [fluentd](https://docs.fluentd.org/) plugin for the Oracle
+Cloud Infrastructure (OCI) Logging service. This project is open source, in
+active development and maintained by Oracle.
 
 ## Requirements
 To use this fluentd plugin, you must have:
+
 * An Oracle Cloud Infrastructure acount.
 * A user created in that account, in a group with a policy that grants the
 desired permissions. This can be a user for yourself, or another person/system
@@ -26,18 +27,24 @@ gem 'fluent-plugin-oci-logging'
 
 And then execute:
 
-    $ bundle
+```shell
+$ bundle
+```
 
 Or install it yourself as:
 
-    $ gem install fluent-plugin-oci-logging
+```
+gem install fluent-plugin-oci-logging
+```
 
 Besides the plugin, the above commands will also automatically install fluentd,
 as well as the rest of the required ruby dependencies, in your system.
 
 ## Configuration
-For usage with instance principals:
-```
+
+For usage with [instance principals](https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/callingservicesfrominstances.htm):
+
+```xml
 <source>
   @type dummy
   tag test
@@ -49,8 +56,9 @@ For usage with instance principals:
 </match>
 ```
 
-For usage with user principals:
-```
+For usage with an [API signing key]( https://docs.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm):
+
+```xml
 <source>
   @type dummy
   tag test
@@ -63,16 +71,17 @@ For usage with user principals:
 </match>
 ```
 
-In order to use user principals, you also need to have properly set up your OCI
-configuration file. Instructions can be found [here](https://docs.cloud.oracle.com/en-us/iaas/Content/API/SDKDocs/cliconfigure.htm).
+To authenticate as a particular user, you need to [generate an API Signing Key](https://docs.cloud.oracle.com/en-us/iaas/Content/API/SDKDocs/cliconfigure.htm) for that user.
 
 ## Logging Setup
+
 Detailed instructions, alongside examples, on how you can setup your logging
-environment can be found in the official OCI docs [here](https://docs.cloud.oracle.com/en-us/iaas/Content/Logging/Task/managinglogs.htm).
+environment can be found in the official [OCI docs](https://docs.cloud.oracle.com/en-us/iaas/Content/Logging/Task/managinglogs.htm).
 Also, to find out how to search your logs, you can check the documentation
-available [here](https://docs.cloud.oracle.com/en-us/iaas/Content/Logging/Concepts/searchinglogs.htm).
+for [log search](https://docs.cloud.oracle.com/en-us/iaas/Content/Logging/Concepts/searchinglogs.htm).
 
 ## Documentation
+
 Full documentation, including prerequisites, installation, and configuration
 instructions can be found [here](https://docs.cloud.oracle.com/en-us/iaas/Content/Logging/Concepts/loggingoverview.htm).
 
@@ -80,23 +89,26 @@ API reference can be found [here](https://docs.cloud.oracle.com/en-us/iaas/tools
 
 This documentation can be found installed in your system in the gem specific directory. You can find its exact location by running the command:
 
-    $ gem contents fluent-plugin-oci-logging
+```shell
+gem contents fluent-plugin-oci-logging
+```
 
 Alternatively, you can also view it via ruby's documentation tool `ri` with the following command:
 
-    $ ri -f markdown fluent-plugin-oci-logging:README
+```shell
+ri -f markdown fluent-plugin-oci-logging:README
+```
 
 Finally, you can view it by extracting the gem contents (the gem file itself is a tar archive).
 
 
 ## Known Issues
 
-You can find information on any known issues with the SDK [here]()
-and under the [Issues]() tab of this project's
-[GitHub repository]().
+You can find information on any known issues with the SDK under the [Issues](https://github.com/oracle/fluent-plugin-oci-logging/issues) tab.
 
 ## Questions or Feedback?
-You can post an issue on the [Issues]() tab of this project's [GitHub repository]().
+
+Please [open an issue for any problems or questions](https://github.com/oracle/fluent-plugin-oci-logging/issues) you may have.
 
 Addtional ways to get in touch:
 
@@ -106,17 +118,19 @@ Addtional ways to get in touch:
 
 ## Contributing
 
-<!-- If your project has specific contribution requirements, update the
-    CONTRIBUTING.md file to ensure those requirements are clearly explained. -->
-
 This project welcomes contributions from the community. Before submitting a pull
 request, please [review our contribution guide](./CONTRIBUTING.md).
 
+## Security
+
+Please consult the [security guide](./SECURITY.md) for our responsible security
+vulnerability disclosure process.
+
 ## License
 
-Copyright (c) 2016, 2020, Oracle and/or its affiliates.  All rights reserved.
+Copyright (c) 2021, Oracle and/or its affiliates.
 
-This software is dual-licensed to you under the Universal Permissive License (UPL) 1.0 as shown at https://oss.oracle.com/licenses/upl
-or Apache License 2.0 as shown at http://www.apache.org/licenses/LICENSE-2.0. You may choose either license.
+This software is dual-licensed to you under the Universal Permissive License (UPL) 1.0 as shown at <https://oss.oracle.com/licenses/upl>
+or Apache License 2.0 as shown at <http://www.apache.org/licenses/LICENSE-2.0>. You may choose either license.
 
-See [LICENSE]() for more details.
+See [LICENSE](./LICENSE.txt) for more details.
