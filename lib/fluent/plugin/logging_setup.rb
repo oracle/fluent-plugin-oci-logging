@@ -225,7 +225,7 @@ module Fluent
         elsif OS.ubuntu?
           @ca_file = @ca_file == PUBLIC_DEFAULT_LINUX_CA_PATH ? PUBLIC_DEFAULT_UBUNTU_CA_PATH : @ca_file
         elsif OS.debian?
-          @ca_file = @ca_file == PUBLIC_DEFAULT_LINUX_CA_PATH ? PUBLIC_DEFAULT_DEBIAN_CA_PATH : @ca_file
+          @ca_file = (@ca_file.nil || @ca_file == PUBLIC_DEFAULT_LINUX_CA_PATH) ? PUBLIC_DEFAULT_DEBIAN_CA_PATH : @ca_file
         else
           @ca_file = @region == 'r1' && @ca_file == PUBLIC_DEFAULT_LINUX_CA_PATH ? R1_CA_PATH : @ca_file
         end
