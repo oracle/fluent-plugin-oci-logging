@@ -27,6 +27,7 @@ module Fluent
       PUBLIC_DEFAULT_LINUX_CA_PATH = '/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem'
       PUBLIC_DEFAULT_WINDOWS_CA_PATH = 'C:\\oracle_unified_agent\\unified-monitoring-agent\\embedded\\ssl\\certs\\cacert.pem'
       PUBLIC_DEFAULT_UBUNTU_CA_PATH = '/etc/ssl/certs/ca-certificates.crt'
+      PUBLIC_DEFAULT_DEBIAN_CA_PATH = PUBLIC_DEFAULT_UBUNTU_CA_PATH
 
       def logger
         @log ||= OS.windows? ? Logger.new(WINDOWS_UPLOADER_OUTPUT_LOG) : Logger.new($stdout)
@@ -219,10 +220,13 @@ module Fluent
       # Since r1 overlay has a different default make sure to update this
       #
       def set_default_ca_file
+        @ca_file = PUBLIC_DEFAULT_LINUX_CA_PATH if @ca_file.nil?
         if OS.windows?
           @ca_file = @ca_file == PUBLIC_DEFAULT_LINUX_CA_PATH ? PUBLIC_DEFAULT_WINDOWS_CA_PATH : @ca_file
         elsif OS.ubuntu?
           @ca_file = @ca_file == PUBLIC_DEFAULT_LINUX_CA_PATH ? PUBLIC_DEFAULT_UBUNTU_CA_PATH : @ca_file
+        elsif OS.debian?
+          @ca_file = @ca_file == PUBLIC_DEFAULT_LINUX_CA_PATH ? PUBLIC_DEFAULT_DEBIAN_CA_PATH : @ca_file
         else
           @ca_file = @region == 'r1' && @ca_file == PUBLIC_DEFAULT_LINUX_CA_PATH ? R1_CA_PATH : @ca_file
         end

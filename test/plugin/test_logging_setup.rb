@@ -250,7 +250,11 @@ class PublicloggingSetupTest < Test::Unit::TestCase
     set_default_ca_file
     assert_equal @ca_file, 'something/unexpect'
 
-    OS.expects(:ubuntu?).returns(false) && OS.expects(:windows?).returns(false)
+    # OS.expects(:ubuntu?).returns(false) && OS.expects(:windows?).returns(false)
+    OS.expects(:ubuntu?).returns(false)
+    OS.expects(:windows?).returns(false)
+    OS.expects(:debian?).returns(false)
+
     @ca_file = PUBLIC_DEFAULT_LINUX_CA_PATH
     @region = 'r1'
     set_default_ca_file
@@ -268,6 +272,14 @@ class PublicloggingSetupTest < Test::Unit::TestCase
     @region = 'us-phoenix-1'
     set_default_ca_file
     assert_equal @ca_file, 'something/unexpect'
+
+    OS.expects(:windows?).returns(false)
+    OS.expects(:debian?).returns(true)
+    OS.expects(:ubuntu?).returns(false)
+    @ca_file = PUBLIC_DEFAULT_LINUX_CA_PATH
+    @region = 'us-phoenix-1'
+    set_default_ca_file
+    assert_equal @ca_file, PUBLIC_DEFAULT_DEBIAN_CA_PATH
   end
 
   test 'get_signer_type' do
