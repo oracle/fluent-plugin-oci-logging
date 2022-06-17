@@ -43,7 +43,7 @@ module Fluent
 
         # create lumberjack request records
         logentry = ::OCI::Loggingingestion::Models::LogEntry.new
-        logentry.time = Time.at(time).strftime('%FT%T.%LZ')
+        logentry.time = Time.at(time).utc.strftime('%FT%T.%LZ')
         begin
           logentry.data = content.to_json
         rescue StandardError
@@ -67,7 +67,7 @@ module Fluent
           log_entry_batch.source = @hostname
           log_entry_batch.type = PUBLIC_LOGGING_PREFIX + tagpath
           log_entry_batch.subject = sourceidentifier
-          log_entry_batch.defaultlogentrytime = Time.at(time).strftime('%FT%T.%LZ')
+          log_entry_batch.defaultlogentrytime = Time.at(time).utc.strftime('%FT%T.%LZ')
           log_entry_batch.entries = []
 
           log_batches_map[requestkey] = log_entry_batch

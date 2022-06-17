@@ -56,7 +56,7 @@ class PublicloggingUtilsTest < Test::Unit::TestCase
     log_batches_map = {}
     build_request(time, {}, 'test_tag', log_batches_map, '/path/to/file')
     assert(
-        log_batches_map['test_tag/path/to/file'].defaultlogentrytime == Time.at(time).strftime('%FT%T.%LZ'),
+        log_batches_map['test_tag/path/to/file'].defaultlogentrytime == Time.at(time).utc.strftime('%FT%T.%LZ'),
         "Expected time #{time}, got #{log_batches_map['test_tag/path/to/file'].defaultlogentrytime}")
     # log_batches_map = {}
     build_request(time, {'key' => 'value'}, 'test_tag', log_batches_map, '/path/to/file')
@@ -71,7 +71,7 @@ class PublicloggingUtilsTest < Test::Unit::TestCase
     log_batches_map = {}
     build_request(time, {}, 'test_tag', log_batches_map, '/path/to/file')
     assert(
-        log_batches_map['test_tag/path/to/file'].defaultlogentrytime == Time.at(time).strftime('%FT%T.%LZ'),
+        log_batches_map['test_tag/path/to/file'].defaultlogentrytime == Time.at(time).utc.strftime('%FT%T.%LZ'),
         "Expected time #{time}, got #{log_batches_map['test_tag/path/to/file'].defaultlogentrytime}")
     # log_batches_map = {}
     build_request(time, {'key' => "value \x92 ".force_encoding("ASCII-8BIT")}, 'test_tag', log_batches_map, '/path/to/file')
