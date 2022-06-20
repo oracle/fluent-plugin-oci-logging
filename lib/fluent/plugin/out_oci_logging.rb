@@ -70,7 +70,7 @@ module Fluent
       # Implement write() if your plugin uses a normal buffer.
       ########################################################
       def write(chunk)
-        log.debug "writing chunk metadata #{chunk.metadata}",
+        log.debug "writing chunk metadata #{chunk.metadata}", \
                   dump_unique_id_hex(chunk.unique_id)
         log_batches_map = {}
         # For standard chunk format (without #format() method) 
