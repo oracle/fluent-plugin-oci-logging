@@ -70,15 +70,15 @@ module Fluent
       # Implement write() if your plugin uses a normal buffer.
       ########################################################
       def write(chunk)
-        log.debug "writing chunk metadata #{chunk.metadata}", \
-        dump_unique_id_hex(chunk.unique_id)
+        log.debug "writing chunk metadata #{chunk.metadata}",
+                  dump_unique_id_hex(chunk.unique_id)
         log_batches_map = {}
         # For standard chunk format (without #format() method) 
         size = 0 
         chunk.each do |time, record|
           begin
             tag = get_modified_tag(chunk.metadata.tag)
-            source_identifier = record.key?('tailed_path') ? record['tailed_path'] : ""
+            source_identifier = record.key?('tailed_path') ? record['tailed_path'] : ''
             content = flatten_hash(record)
             size += content.to_json.bytesize
             build_request(time, record, tag, log_batches_map, source_identifier)
