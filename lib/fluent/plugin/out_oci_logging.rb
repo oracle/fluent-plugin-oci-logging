@@ -70,32 +70,33 @@ module Fluent
       # Implement write() if your plugin uses a normal buffer.
       ########################################################
       def write(chunk)
-  		log.debug "writing chunk metadata #{chunk.metadata}", \
+        log.debug "writing chunk metadata #{chunk.metadata}", \
         dump_unique_id_hex(chunk.unique_id)
-  		log_batches_map = {}
-  		# For standard chunk format (without #format() method)
-  		size = 0
-  		chunk.each do |time, record|
-    	begin
-      		tag = get_modified_tag(chunk.metadata.tag)
-      		source_identifier = record.key?('tailed_path') ? record['tailed_path'] : ""
-      		content = flatten_hash(record)
-      		size = size + content.to_json.bytesize
-      		build_request(time, record, tag, log_batches_map, source_identifier)
-      		if size >= 9*1024*1024
-        		log.info "#{size}"
-        		send_requests(log_batches_map)
-        		log_batches_map = {}
-        		size = 0
-      		end
-    	rescue StandardError => e
-      			log.error(e.full_message)
-    	end
-  		# flushing data to LJ
-  		unless log_batches_map.empty?
-    		send_requests(log_batches_map)
-  		end
-	  end
+        log_batches_map = {}
+        # For standard chunk format (without #format() method) 
+        size = 0 
+        chunk.each do |time, record|
+          begin
+            tag = get_modified_tag(chunk.metadata.tag)
+            source_identifier = record.key?('tailed_path') ? record['tailed_path'] : ""
+            content = flatten_hash(record)
+            size += content.to_json.bytesize
+            build_request(time, record, tag, log_batches_map, source_identifier)
+            if size >= 9*1024*1024
+              log.info "#{size}"
+              send_requests(log_batches_map)
+              log_batches_map = {}
+              size = 0
+            end
+          rescue StandardError => e
+            log.error(e.full_message)
+          end
+        end
+        # flushing data to LJ
+        unless log_batches_map.empty?
+          send_requests(log_batches_map)
+        end
+      end
     end
   end
 end
