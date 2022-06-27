@@ -85,7 +85,7 @@ module Fluent
             size += content.to_json.bytesize
             build_request(time, record, tag, log_batches_map, source_identifier)
             if size >= PAYLOAD_SIZE
-              log.debug "Exceeding payload size. Size : #{size}"
+              log.info "Exceeding payload size. Size : #{size}"
               send_requests(log_batches_map)
               log_batches_map = {}
               size = 0
@@ -96,7 +96,7 @@ module Fluent
         end
         # flushing data to LJ
         unless log_batches_map.empty?
-          log.debug "Payload size : #{size}"
+          log.info "Payload size : #{size}"
           send_requests(log_batches_map)
         end
       end
