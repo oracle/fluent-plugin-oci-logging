@@ -42,6 +42,8 @@ module Fluent
 
       helpers :event_emitter
 
+      PAYLOAD_SIZE = 9*1024*1024 #restricting payload size at 9MB
+
       def configure(conf)
         super
         log.debug 'determining the signer type'
@@ -82,8 +84,8 @@ module Fluent
             content = flatten_hash(record)
             size += content.to_json.bytesize
             build_request(time, record, tag, log_batches_map, source_identifier)
-            if size >= 9*1024*1024
-              log.info "#{size}"
+            if size >= PAYLOAD_SIZE
+              log.debug "Exceeding payload size. Size : #{size}"
               send_requests(log_batches_map)
               log_batches_map = {}
               size = 0
@@ -94,6 +96,7 @@ module Fluent
         end
         # flushing data to LJ
         unless log_batches_map.empty?
+          log.debug "Payload size : #{size}"
           send_requests(log_batches_map)
         end
       end
