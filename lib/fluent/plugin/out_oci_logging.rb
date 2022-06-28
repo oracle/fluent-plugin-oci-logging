@@ -42,6 +42,8 @@ module Fluent
 
       helpers :event_emitter
 
+      PAYLOAD_SIZE = 9*1024*1024 #restricting payload size at 9MB
+
       def configure(conf)
         super
         log.debug 'determining the signer type'
@@ -73,19 +75,30 @@ module Fluent
         log.debug "writing chunk metadata #{chunk.metadata}", \
                   dump_unique_id_hex(chunk.unique_id)
         log_batches_map = {}
-
-        # For standard chunk format (without #format() method)
+        # For standard chunk format (without #format() method) 
+        size = 0 
         chunk.each do |time, record|
           begin
             tag = get_modified_tag(chunk.metadata.tag)
             source_identifier = record.key?('tailed_path') ? record['tailed_path'] : ''
+            content = flatten_hash(record)
+            size += content.to_json.bytesize
             build_request(time, record, tag, log_batches_map, source_identifier)
+            if size >= PAYLOAD_SIZE
+              log.info "Exceeding payload size. Size : #{size}"
+              send_requests(log_batches_map)
+              log_batches_map = {}
+              size = 0
+            end
           rescue StandardError => e
             log.error(e.full_message)
           end
         end
-
-        send_requests(log_batches_map)  # flush data
+        # flushing data to LJ
+        unless log_batches_map.empty?
+          log.info "Payload size : #{size}"
+          send_requests(log_batches_map)
+        end
       end
     end
   end
