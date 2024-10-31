@@ -36,6 +36,7 @@ Thumbs.db
 # Generic Ruby #
 ################
 *.gem
+!oracle-in-logging/fluent-plugin-oracle-in-logging-*.gem
 *.rbc
 /.config
 /coverage/
