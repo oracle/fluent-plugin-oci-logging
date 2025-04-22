@@ -1,0 +1,3 @@
+source 'https://artifactory.oci.oraclecorp.com/api/gems/rubygems-remote/'
+
+gemspec
