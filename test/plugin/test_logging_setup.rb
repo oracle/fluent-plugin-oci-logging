@@ -197,8 +197,33 @@ class PublicloggingSetupTest < Test::Unit::TestCase
     oci_config = mock('oci_config')
     @ca_file = "test/dummy.pem"
     exception = assert_raise(StandardError) {get_signer(oci_config, "service")}
-    assert(exception.message.include?("Principal type service not supported, use 'instance', 'resource' or 'user' instead"),
-           "Unmatched send_requests. Expected 'Principal type service not supported, use 'instance' or 'user' instead', got '#{exception.message}'")
+    assert(exception.message.include?("Principal type service not supported, use 'instance', 'resource', 'workload' or 'user' instead"),
+           "Unmatched send_requests. Expected 'Principal type service not supported, use 'instance', 'resource', 'workload' or 'user' instead', got '#{exception.message}'")
+  end
+
+  test "get oke workload identity signer" do
+    oci_config = OCI::Config.new
+    @ca_file = "test/dummy.pem"
+    oci_signer = mock('oci_signer')
+    OCI::Auth::Signers.expects(:oke_workload_resource_principal_signer).returns(oci_signer)
+
+    mock_env("OCI_RESOURCE_PRINCIPAL_REGION" => "us-ashburn-1") do
+      assert_equal(oci_signer, get_signer(oci_config, WORKLOAD_SIGNER_TYPE))
+    end
+    assert_equal "us-ashburn-1", @region
+    assert_equal "oraclecloud.com", @realmDomainComponent
+    assert_equal Socket.gethostname, @hostname
+  end
+
+  test "get oke workload identity signer with short region name" do
+    oci_config = OCI::Config.new
+    @ca_file = "test/dummy.pem"
+    OCI::Auth::Signers.expects(:oke_workload_resource_principal_signer).returns(mock('oci_signer'))
+
+    mock_env("OCI_RESOURCE_PRINCIPAL_REGION" => "iad") do
+      get_signer(oci_config, WORKLOAD_SIGNER_TYPE)
+    end
+    assert_equal "us-ashburn-1", @region
   end
 
   test "get resource principal signer" do
@@ -300,6 +325,9 @@ class PublicloggingSetupTest < Test::Unit::TestCase
 
     oci_config, signer_type = get_signer_type(config_dir: "/wrong-dir")
     assert_equal AUTO_SIGNER_TYPE, signer_type
+
+    oci_config, signer_type = get_signer_type(principal_override: WORKLOAD_SIGNER_TYPE, config_dir: config_file)
+    assert_equal WORKLOAD_SIGNER_TYPE, signer_type
   end
 
 end

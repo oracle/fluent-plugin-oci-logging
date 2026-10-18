@@ -18,6 +18,7 @@ module Fluent
       RETRIES = 3
       USER_SIGNER_TYPE = 'user'
       AUTO_SIGNER_TYPE = 'auto'
+      WORKLOAD_SIGNER_TYPE = 'workload'
       LINUX_OCI_CONFIG_DIR = Fluent::Plugin::PublicLoggingUtils.determine_linux_config_path
       WINDOWS_OCI_CONFIG_DIR = Fluent::Plugin::PublicLoggingUtils.determine_windows_config_path
       USER_CONFIG_PROFILE_NAME = Fluent::Plugin::PublicLoggingUtils.determine_config_profile_name(LINUX_OCI_CONFIG_DIR, WINDOWS_OCI_CONFIG_DIR)
@@ -123,7 +124,12 @@ module Fluent
       def get_signer_type(principal_override: nil, config_dir: nil)
         config_dir ||= OS.windows? ?  WINDOWS_OCI_CONFIG_DIR : LINUX_OCI_CONFIG_DIR
 
-        if (File.file?(config_dir) && principal_override != AUTO_SIGNER_TYPE) || principal_override == USER_SIGNER_TYPE
+        if principal_override == WORKLOAD_SIGNER_TYPE
+          logger.info("using #{WORKLOAD_SIGNER_TYPE} signer type")
+          signer_type = WORKLOAD_SIGNER_TYPE
+          oci_config = OCI::Config.new
+        elsif (File.file?(config_dir) && principal_override != AUTO_SIGNER_TYPE) ||
+              principal_override == USER_SIGNER_TYPE
           begin
             logger.info("using #{USER_SIGNER_TYPE} signer type with config dir #{config_dir}")
             oci_config = OCI::ConfigFileLoader.load_config(
@@ -179,9 +185,14 @@ module Fluent
           end
 
           signer
+        when WORKLOAD_SIGNER_TYPE
+          logger.info 'signer type is "workload", creating OKE workload identity signer'
+          get_host_info_for_oke_workload
+          set_default_ca_file
+          OCI::Auth::Signers.oke_workload_resource_principal_signer
         else
           raise StandardError, "Principal type #{signer_type} not supported, "\
-            "use 'instance', 'resource' or 'user' instead"
+            "use 'instance', 'resource', 'workload' or 'user' instead"
         end
       end
 
@@ -202,6 +213,20 @@ module Fluent
 
         logger.info("in non oci instance, region is #{@region}, "\
                     " hostname is #{@hostname}, realm is #{@realmDomainComponent}")
+      end
+
+      def get_host_info_for_oke_workload
+        region = ENV['OCI_RESOURCE_PRINCIPAL_REGION']
+        # fall back to instance metadata of the worker node if the region is not provided
+        return get_host_info_for_oci_instance if region.nil? || region.empty?
+
+        @region = OCI::Regions::REGION_SHORT_NAMES_TO_LONG_NAMES.fetch(region.downcase.to_sym, region)
+        # hostname in a pod is the pod name
+        @hostname = Socket.gethostname
+        @realmDomainComponent = OCI::Regions.get_second_level_domain(@region)
+
+        logger.info("in oke workload, region is #{@region}, " \
+                    "hostname is #{@hostname}, realm is #{@realmDomainComponent}")
       end
 
       def get_host_info_for_oci_instance

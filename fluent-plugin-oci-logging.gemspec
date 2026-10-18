@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
   spec.description   = 'Oracle Observability FluentD Plugins : Logging output plugin for OCI logging'
 
   spec.add_runtime_dependency 'fluentd', '~> 1.12.3'
-  spec.add_runtime_dependency 'oci', '~> 2.12'
+  spec.add_runtime_dependency 'oci', '~> 2.19'
   spec.add_runtime_dependency 'retriable', '~> 3.1.2'
 
   spec.add_development_dependency 'bundler', '> 1.0'

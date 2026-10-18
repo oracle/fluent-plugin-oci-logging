@@ -73,6 +73,31 @@ For usage with an [API signing key]( https://docs.oracle.com/en-us/iaas/Content/
 
 To authenticate as a particular user, you need to [generate an API Signing Key](https://docs.cloud.oracle.com/en-us/iaas/Content/API/SDKDocs/cliconfigure.htm) for that user.
 
+For usage with [OKE workload identity](https://docs.oracle.com/en-us/iaas/Content/ContEng/Tasks/contenggrantingworkloadaccesstoresources.htm):
+
+```xml
+<source>
+  @type dummy
+  tag test
+  dummy {"test":"message"}
+</source>
+<match **>
+    @type oci_logging
+    principal_override workload
+    log_object_id  ocid1.log.oc1.XXX.xxx
+    # path to the CA bundle inside the container, if it differs from the default
+    ca_file /etc/ssl/certs/ca-certificates.crt
+</match>
+```
+
+Workload identity is only available on enhanced OKE clusters. Set the `OCI_RESOURCE_PRINCIPAL_REGION`
+environment variable of the pod to the region of the cluster (e.g. `us-ashburn-1`), and grant the workload
+access with a policy such as:
+
+```text
+Allow any-user to use log-content in compartment <compartment> where all {request.principal.type = 'workload', request.principal.namespace = '<namespace>', request.principal.service_account = '<service account>', request.principal.cluster_id = '<cluster ocid>'}
+```
+
 ## Logging Setup
 
 Detailed instructions, alongside examples, on how you can setup your logging
